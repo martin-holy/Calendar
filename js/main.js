@@ -19,6 +19,9 @@ window.addEventListener('load', () => {
 }, false);
 
 function addItem() {
+  // for debug
+  if (app.content.children.length > 1000) return;
+
   let sb = app.scrollBox;
 
   if (sb.scrollHeight - sb.scrollTop - sb.clientHeight < sb.clientHeight) {
