@@ -1,0 +1,35 @@
+body {
+  background-color: #33373A;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#container {
+  width: 400px;
+  margin: 0px auto;
+  padding: 40px 0;
+}
+
+#scrollbox {
+  width: 400px;
+  height: 300px;
+  overflow: auto;
+}
+
+#content > p {
+  background: #2A4151;
+  color: #eee;
+  font-weight: bold;
+  font-size: 0.75em;
+  padding: 5px;
+  margin: 1px 1px 0 1px;
+  border: 1px solid black;
+}
+
+#toolbar span {
+  background: #2A4151;
+  color: #eee;
+  font-weight: bold;
+  border: 1px solid black;
+  padding: 5px;
+  cursor: pointer;
+}
