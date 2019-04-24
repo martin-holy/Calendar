@@ -1,35 +1,50 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   background-color: #33373A;
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#heather {
+  font-size: 30px;
+  padding: 5px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+#heather span {
+  color: white;
+  padding: 0 5px;
+}
+
 #container {
-  width: 400px;
-  margin: 0px auto;
-  padding: 40px 0;
+  position: relative;
+  height: 100%;
+  margin: 0 5px;
 }
 
 #scrollbox {
-  width: 400px;
-  height: 300px;
+  position: absolute;
+  top: 60px;
+  bottom: 5px;
+  left: 0px;
+  width: 100%;
   overflow: auto;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 #content > p {
   background: #2A4151;
   color: #eee;
   font-weight: bold;
-  font-size: 0.75em;
+  font-size: 20px;
   padding: 5px;
-  margin: 1px 1px 0 1px;
+  margin: 0;
   border: 1px solid black;
-}
-
-#toolbar span {
-  background: #2A4151;
-  color: #eee;
-  font-weight: bold;
-  border: 1px solid black;
-  padding: 5px;
-  cursor: pointer;
+  border-bottom: 0;
 }

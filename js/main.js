@@ -6,63 +6,62 @@ window.addEventListener('load', () => {
 
   app.scrollBox.addEventListener('scroll', () => {
     addItem();
+    setHeatherMonthAndYear();
   }, false);
 
   
-  let startDate = new Date(Date.now());
+  let startDate = (new Date(Date.now())).setHours(0, 0, 0, 0);
   app.dateFrom = new Date(startDate);
   app.dateTo = new Date(startDate);
   app.dateTo.setDate(app.dateTo.getDate() - 1);
   addItem();
+  setHeatherMonthAndYear();
 
   console.log(app.content.children.length);
 }, false);
 
-function addItem() {
-  // for debug
-  if (app.content.children.length > 1000) return;
+function createItem(date) {
+  let p = document.createElement('p');
+  p.setAttribute('data-date', date.getTime());
+  p.innerText = date.getDate();
+  return p;
+}
 
+function addItem() {
   let sb = app.scrollBox;
 
+  // add future dates
   if (sb.scrollHeight - sb.scrollTop - sb.clientHeight < sb.clientHeight) {
-    let p = document.createElement('p');
-
     app.dateTo.setDate(app.dateTo.getDate() + 1);
-    p.innerText = app.dateTo.toYMD();
-    app.content.appendChild(p);
-
+    app.content.appendChild(createItem(app.dateTo));
     addItem();
   }
 
+  // add past dates
   if (sb.scrollHeight > sb.clientHeight && sb.scrollTop < sb.clientHeight) {
-    let p = document.createElement('p');
+    let oldst = sb.scrollTop,
+        oldsh = sb.scrollHeight;
+
+    // scrollTop will be updated by browser if is > 0 // works in Chrome
+    if (sb.scrollTop == 0) sb.scrollTop = 1;
 
     app.dateFrom.setDate(app.dateFrom.getDate() - 1);
-    p.innerText = app.dateFrom.toYMD();
+    app.content.insertBefore(createItem(app.dateFrom), app.content.children[0]);
 
-    /*// Chrome version
-    if (app.scrollBox.scrollTop == 0) 
-      app.scrollBox.scrollTop = 1;
-    app.content.insertBefore(p, app.content.children[0]);
-    // end Chrome version*/
-
-    // Firefox / Edge version
-    // not smooth scroll when scrolling up
-    let oldsh = sb.scrollHeight;
-    app.content.insertBefore(p, app.content.children[0]);
-    app.scrollBox.scrollTop += sb.scrollHeight - oldsh;
-    // end Firefox / Edge version
+    if (sb.scrollTop <= oldst) { // <= insted of == is there just in case something goes wrong :)
+      // browser didn't update scrollTop // Firefox, Edge, ?
+      // not smooth scroll when scrolling up
+      sb.scrollTop += sb.scrollHeight - oldsh;
+    }
 
     addItem();
   }
 }
 
-if (!Date.prototype.toYMD) {
-  Date.prototype.toYMD = function () {
-    return [
-      this.getFullYear(),
-      ('0' + (this.getMonth() + 1)).slice(-2),
-      ('0' + this.getDate()).slice(-2)
-    ].join('-');
-  };
+function setHeatherMonthAndYear() {
+  let index = Math.floor(app.scrollBox.scrollTop / (app.scrollBox.scrollHeight / app.content.children.length)),
+      item = app.content.children[index],
+      date = new Date(parseInt(item.getAttribute('data-date')));
+  document.getElementById('heather_year').innerText = date.getFullYear();
+  document.getElementById('heather_month').innerText = date.toLocaleDateString(navigator.language, {month: 'long'});
 }
