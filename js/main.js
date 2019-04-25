@@ -3,6 +3,9 @@ let app = {};
 window.addEventListener('load', () => {
   app.scrollBox = document.getElementById('scrollbox');
   app.content = document.getElementById('content');
+  app.heather = document.getElementById('heather');
+  app.heatherYear = document.getElementById('heather_year');
+  app.heatherMonth = document.getElementById('heather_month');
 
   app.scrollBox.addEventListener('scroll', () => {
     addItem();
@@ -16,17 +19,7 @@ window.addEventListener('load', () => {
   app.dateTo.setDate(app.dateTo.getDate() - 1);
   addItem();
   setHeatherMonthAndYear();
-
-  console.log(app.content.children.length);
 }, false);
-
-function createItem(date) {
-  let p = document.createElement('p');
-  p.setAttribute('data-date', date.getTime());
-  p.classList.add(`month${(date.getMonth() + 1).toString().padStart(2, '0')}`);
-  p.innerText = date.getDate();
-  return p;
-}
 
 function addItem() {
   let sb = app.scrollBox;
@@ -59,10 +52,35 @@ function addItem() {
   }
 }
 
+function createItem(date) {
+  let day = document.createElement('div'),
+      dayOfWeek = date.getDay();
+  day.setAttribute('data-date', date.getTime());
+  day.classList.add(`month${date.getMonth()}`);
+  day.classList.add('day');
+
+  day.innerHTML = `
+    <div class="dayBox${dayOfWeek == 0 || dayOfWeek == 6 ? ' weekend' : ''}">
+      <span class="dayNr">${date.getDate()}</span>
+      <span class="dayName">${date.toLocaleDateString(navigator.language, {weekday: 'short'})}</span>
+    </div>`;
+
+  return day;
+}
+
 function setHeatherMonthAndYear() {
-  let index = Math.floor(app.scrollBox.scrollTop / (app.scrollBox.scrollHeight / app.content.children.length)),
-      item = app.content.children[index],
-      date = new Date(parseInt(item.getAttribute('data-date')));
-  document.getElementById('heather_year').innerText = date.getFullYear();
-  document.getElementById('heather_month').innerText = date.toLocaleDateString(navigator.language, {month: 'long'});
+  let elm = document.elementFromPoint(7, window.innerHeight / 2),
+      atr = elm.getAttribute('data-date');
+
+  if (atr == null) return;
+
+  let date = new Date(parseInt(atr)),
+      month = date.getMonth();
+
+  if (app.currentMonth == month) return;
+
+  app.currentMonth = month;
+  app.heatherYear.innerText = date.getFullYear();
+  app.heatherMonth.innerText = date.toLocaleDateString(navigator.language, {month: 'long'});
+  app.heather.className = `month${month}`;
 }
