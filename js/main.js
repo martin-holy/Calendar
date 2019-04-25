@@ -69,7 +69,7 @@ function createItem(date) {
 }
 
 function setHeatherMonthAndYear() {
-  let elm = document.elementFromPoint(7, window.innerHeight / 2),
+  let elm = document.elementFromPoint(3, window.innerHeight / 2),
       atr = elm.getAttribute('data-date');
 
   if (atr == null) return;
