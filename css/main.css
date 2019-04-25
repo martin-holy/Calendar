@@ -39,7 +39,6 @@ body {
 }
 
 #content > p {
-  background: #2A4151;
   color: #eee;
   font-weight: bold;
   font-size: 20px;
@@ -48,3 +47,16 @@ body {
   border: 1px solid black;
   border-bottom: 0;
 }
+
+.month01 { background-color: #2A5778; }
+.month02 { background-color: #386F94; }
+.month03 { background-color: #326951; }
+.month04 { background-color: #577A48; }
+.month05 { background-color: #7A8B4B; }
+.month06 { background-color: #C37E4B; }
+.month07 { background-color: #A35A40; }
+.month08 { background-color: #9B473A; }
+.month09 { background-color: #973D47; }
+.month10 { background-color: #723A59; }
+.month11 { background-color: #4A4458; }
+.month12 { background-color: #3E475C; }

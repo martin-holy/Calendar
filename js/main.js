@@ -23,6 +23,7 @@ window.addEventListener('load', () => {
 function createItem(date) {
   let p = document.createElement('p');
   p.setAttribute('data-date', date.getTime());
+  p.classList.add(`month${(date.getMonth() + 1).toString().padStart(2, '0')}`);
   p.innerText = date.getDate();
   return p;
 }
