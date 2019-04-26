@@ -8,6 +8,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#container {
+  position: relative;
+  height: 100%;
+  border: 1px solid black;
+}
+
 #heather {
   font-size: 30px;
   padding: 5px;
@@ -20,12 +26,34 @@ body {
 #heather span {
   color: white;
   padding: 0 5px;
+  cursor: pointer;
+  text-shadow: 3px 3px 8px black;
 }
 
-#container {
+#month_select {
   position: relative;
-  height: 100%;
-  border: 1px solid black;
+  top: 15px;
+  width: 300px;
+  height: 160px;
+  margin: auto;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  visibility: hidden;
+  box-shadow: 0px 0px 20px 5px black;
+}
+
+#month_select div {
+  width: 25%;
+  height: 33.3%;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 3px 3px 8px black;
 }
 
 #scrollbox {
@@ -50,8 +78,10 @@ body {
   flex-direction: column;
   align-items: center;
   width: 40px;
+  height: 40px;
   background-color: rgba(0, 0, 0, 0.3);
   border: 1px solid black;
+  box-shadow: 2px 2px 5px black;
 }
 
 .dayBox .dayNr {

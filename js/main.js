@@ -6,20 +6,25 @@ window.addEventListener('load', () => {
   app.heather = document.getElementById('heather');
   app.heatherYear = document.getElementById('heather_year');
   app.heatherMonth = document.getElementById('heather_month');
+  app.monthSelect = document.getElementById('month_select');
 
   app.scrollBox.addEventListener('scroll', () => {
     addItem();
     setHeatherMonthAndYear();
   }, false);
-
   
-  let startDate = (new Date(Date.now())).setHours(0, 0, 0, 0);
+  initCalendar((new Date(Date.now())).setHours(0, 0, 0, 0));
+  createMonthSelect();
+}, false);
+
+function initCalendar(startDate) {
+  app.content.innerHTML = '';
   app.dateFrom = new Date(startDate);
   app.dateTo = new Date(startDate);
   app.dateTo.setDate(app.dateTo.getDate() - 1);
   addItem();
   setHeatherMonthAndYear();
-}, false);
+}
 
 function addItem() {
   let sb = app.scrollBox;
@@ -80,7 +85,26 @@ function setHeatherMonthAndYear() {
   if (app.currentMonth == month) return;
 
   app.currentMonth = month;
-  app.heatherYear.innerText = date.getFullYear();
+  app.currentYear = date.getFullYear();
+  app.heatherYear.innerText = app.currentYear;
   app.heatherMonth.innerText = date.toLocaleDateString(navigator.language, {month: 'long'});
   app.heather.className = `month${month}`;
+}
+
+function createMonthSelect() {
+  let months = [];
+  for (let i = 0; i < 12; i++) {
+    let monthName = (new Date(2019, i)).toLocaleDateString(navigator.language, {month: 'short'});
+    months.push(`<div class="month${i}" onclick="setMonth(${i});">${monthName}</div>`);
+  }
+  app.monthSelect.innerHTML = months.join('');
+}
+
+function setMonth(index) {
+  app.monthSelect.style.visibility = 'hidden';
+  initCalendar(new Date(app.currentYear, index, 1, 0, 0, 0, 0));
+}
+
+function showMonthSelect() {
+  app.monthSelect.style.visibility = 'visible';
 }
