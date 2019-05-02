@@ -16,26 +16,59 @@ body {
 
 #heather {
   font-size: 30px;
+  color: white;
   padding: 5px;
   height: 50px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid black;
-}
-
-#heather span {
-  color: white;
-  padding: 0 5px;
-  cursor: pointer;
   text-shadow: 3px 3px 8px black;
 }
 
-#month_select {
-  position: relative;
-  top: 15px;
+#heather span {
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+#yearSelect {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
   width: 300px;
   height: 160px;
-  margin: auto;
+  z-index: 1;
+  overflow: auto;
+  visibility: hidden;
+  box-shadow: 8px 8px 30px black;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid black;
+}
+
+#yearSelect > div {
+  display: flex;
+  justify-content: space-around;
+}
+
+#yearSelect > div > div {
+  cursor: pointer;
+  margin: 10px 5px;
+  padding: 0 8px;
+}
+
+.currentYear {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid black;
+  box-shadow: 2px 2px 5px black;
+}
+
+#monthSelect {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  width: 300px;
+  height: 160px;
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
@@ -43,7 +76,7 @@ body {
   box-shadow: 0px 0px 20px 5px black;
 }
 
-#month_select div {
+#monthSelect div {
   width: 25%;
   height: 33.3%;
   color: white;
