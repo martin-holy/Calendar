@@ -1,10 +1,30 @@
-let app = {};
+let app = {},
+    calData = [{id: 1, min: new Date(2019, 3, 20), max: new Date(2019, 4, 7), name: 'Área recreativa'},
+               {id: 2, min: new Date(2019, 3, 28), max: new Date(2019, 4, 10), name: 'Área recreativa 2'},
+               {id: 3, min: new Date(2019, 4, 8), max: new Date(2019, 4, 8), name: 'Área recreativa 3'},
+               {id: 4, min: new Date(2019, 4, 8), max: new Date(2019, 4, 8), name: 'Área recrea 4'},
+               {id: 6, min: new Date(2019, 4, 8), max: new Date(2019, 4, 8), name: 'Área 6'},
+               {id: 5, min: new Date(2019, 4, 8), max: new Date(2019, 4, 8), name: 'Área recreativds 5'},
+               {id: 7, min: new Date(2019, 4, 9), max: new Date(2019, 4, 12), name: 'Área Long 7'},
+               {id: 8, min: new Date(2019, 3, 9), max: new Date(2019, 4, 8), name: 'Área Long 8'},
+               {id: 9, min: new Date(2019, 4, 7), max: new Date(2019, 4, 7), name: 'Área fsdf dsf 9'}, 
+               {id: 10, min: new Date(2019, 4, 8), max: new Date(2019, 4, 10), name: 'Área Long 10'},
+               {id: 11, min: new Date(2019, 4, 10), max: new Date(2019, 4, 15), name: 'Área Long 11'},
+               {id: 12, min: new Date(2019, 4, 5), max: new Date(2019, 4, 7), name: 'Área Long 12'},
+               {id: 13, min: new Date(2019, 2, 3), max: new Date(2019, 3, 9), name: 'Área Long 13'},
+               {id: 14, min: new Date(2019, 4, 11), max: new Date(2019, 4, 11), name: 'Área  sdf dsfddee 14'},
+               {id: 15, min: new Date(2019, 4, 16), max: new Date(2019, 4, 16), name: 'Área  sd  gfg h  15'}];
 
 window.addEventListener('load', () => {
   initApp();
 }, false);
 
 function initApp() {
+  app.consts = {
+    divDayHeight: 55,
+    divLongEventLeftOffset: 20
+  };
+
   app.heather = {
     elm: document.getElementById('heather'),
     yearElm: document.getElementById('heatherYear'),
@@ -32,11 +52,124 @@ function initApp() {
   };
   app.years.content.create(dateNow.getFullYear(), dateNow.getFullYear());
 
+  // Calendar Events
+  app.events = {
+    long: [],
+    oneDay: []
+  };
+
+  prepareCalendarData();
+
   // this will create days
   setDaysStart(null, null, null);
   
   // Months
   createMonthSelect();
+}
+
+function prepareCalendarData() {
+  for (const event of calData) {
+    event.minDate = (new Date(event.min)).setHours(0, 0, 0, 0);
+    event.maxDate = (new Date(event.max)).setHours(0, 0, 0, 0);
+  }
+
+  calData.sort((a, b) => {
+    if (a.minDate < b.minDate) return -1;
+    if (a.minDate > b.minDate) return 1;
+    return a.id < b.id ? -1 : 1;
+  });
+}
+
+function addEventsForThisDay(day, date) {
+  let longEvents = [],
+      oneDayEvents = [],
+      setMarginLeftFor = (event) => {
+        let longEvents = app.events.long.filter(x => x.o.minDate <= event.date && x.o.maxDate >= event.date),
+            margin = 0;
+
+        for (const longEvent of longEvents) 
+          if (longEvent.elm.offsetLeft > margin)
+            margin = longEvent.elm.offsetLeft;
+        
+        margin = margin == 0 ? 0 : margin + app.consts.divLongEventLeftOffset;
+        event.elm.style.marginLeft = `${margin}px`;
+      };
+
+  let idx = calData.length - 1;
+  while (idx > -1) {
+    const event = calData[idx];
+    if (event.maxDate < date) break; // calData is sorted, so there is no more possible events
+    if (event.minDate > date) { idx--; continue; }
+    if (event.minDate == event.maxDate)
+      oneDayEvents.push(event);
+    else if (!app.events.long.find(x => x.o.id == event.id))
+      longEvents.push(event);
+
+    idx--;
+  }
+
+  // Long Events
+  if (longEvents.length != 0) {
+    let container = document.createElement('div');
+    container.className = 'longEvents';
+
+    for (const event of longEvents) {
+      let div = document.createElement('div'),
+          daysMin = Math.round((date - event.minDate) / 86400000) * app.consts.divDayHeight,
+          daysMax = Math.round((event.maxDate - date) / 86400000) * app.consts.divDayHeight;
+      div.innerHTML = `<div class="eventName">${event.name}</div>`;
+      div.style.height = `${daysMin + daysMax + app.consts.divDayHeight - 3}px`; //-2px for border, -1px for offset
+      div.style.top = `-${daysMin}px`;
+      app.events.long.push({ elm: div, o: event });
+      container.appendChild(div);
+    }
+    
+    day.appendChild(container); 
+  }
+
+  // One Day Events
+  if (oneDayEvents.length != 0) {
+    let events = [];
+
+    for (const event of oneDayEvents) {
+      events.push(`
+        <div>
+          <div class="eventColor"></div>
+          <div class="eventName">${event.name}</div>
+        </div>`);
+    }
+
+    let container = document.createElement('div'),
+        event = { elm: container, date: date };
+    container.className = 'oneDayEvents';
+    container.innerHTML = events.join('');
+    setMarginLeftFor(event);
+    day.appendChild(container);
+    app.events.oneDay.push(event);
+  }
+
+  // set offset, so elements not overlap
+  if (longEvents.length != 0) {
+    app.events.long.sort((a, b) => {
+      if (a.o.minDate < b.o.minDate) return -1;
+      if (a.o.minDate > b.o.minDate) return 1;
+      return a.o.id < b.o.id ? -1 : 1;
+    });
+    
+    let spots = [];
+    for (const event of app.events.long) {
+      let index = spots.findIndex(x => x < event.o.minDate);
+      if (index == -1) 
+        index = spots.push(event.o.maxDate) - 1;
+      else
+        spots[index] = event.o.maxDate;
+
+      event.elm.style.left = `${index * app.consts.divLongEventLeftOffset}px`;
+    }
+
+    for (const event of app.events.oneDay)
+      setMarginLeftFor(event);
+  }
 }
 
 function createYear(years, before) {
@@ -88,6 +221,8 @@ function createDay(days, before) {
       <span class="dayNr">${date.getDate()}</span>
       <span class="dayName">${date.toLocaleDateString(navigator.language, {weekday: 'short'})}</span>
     </div>`;
+  
+  addEventsForThisDay(day, date.getTime());
 
   return day;
 }
@@ -127,6 +262,8 @@ function createMonthSelect() {
 }
 
 function setDaysStart(year, month, day) {
+  app.events.oneDay = [];
+  app.events.long = [];
   let c = app.days.current;
   if (year) {
     c.day = 1;
